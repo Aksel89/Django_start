@@ -1,11 +1,15 @@
 from django.shortcuts import render
+from mainapp.models import Product
 
 
 def main (request):
-    context = {
-        'title': 'главная'
+    title = 'Главная'
+    products = Product.objects.all()
+    content = {
+        'title': title,
+        'products': products
     }
-    return render(request, 'mainapp/index.html', context)
+    return render(request, 'mainapp/index.html', content)
 
 
 def contact (request):
