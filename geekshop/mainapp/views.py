@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from mainapp.models import Product
+from mainapp.models import Product
+from django.shortcuts import get_object_or_404
 
-
-def main (request):
+def main(request):
     title = 'Главная'
     products = Product.objects.all()
     content = {
@@ -12,14 +13,18 @@ def main (request):
     return render(request, 'mainapp/index.html', content)
 
 
-def contact (request):
+def contact(request):
     context = {
         'title': 'контакты'
     }
     return render(request, 'mainapp/contact.html', context)
 
 
-def products (request):
+def products(request, pk=None):
+    print(pk)
+
+    title = 'продукты'
+    links_menu = ProductCategory
     context = {
         'title': 'каталог'
     }
