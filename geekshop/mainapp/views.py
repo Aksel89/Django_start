@@ -1,33 +1,77 @@
 from django.shortcuts import render
-from mainapp.models import Product
-from mainapp.models import Product
 from django.shortcuts import get_object_or_404
+from .models import Product, ProductCategory, Contact
+from basketapp.models import Basket
+import random
+
+
+def get_basket(user):
+    if user.is_authenticated:
+        return Basket.objects.filter(user=user)
+    else:
+        return []
+
+
+def get_hot_product():
+    products = Product.objects.all()
+    return random.sample(list(products), 1)[0]
+
+
+def get_similar_products(hot_product):
+    similar_products = Product.objects.filter(category=hot_product.category).exclude(pk=hot_product.pk)[:3]
+    return similar_products
+
 
 def main(request):
     title = 'Главная'
     products = Product.objects.all()
     content = {
         'title': title,
-        'products': products
+        'products': products,
+        'basket': get_basket(request.user),
     }
     return render(request, 'mainapp/index.html', content)
 
 
 def contact(request):
-    context = {
-        'title': 'контакты'
+    title = 'Контакты'
+    contacts = Contact.objects.all()
+    content = {
+        'title': title,
+        'contacts': contacts,
     }
-    return render(request, 'mainapp/contact.html', context)
+    return render(request, 'mainapp/contact.html', content)
 
 
 def products(request, pk=None):
-    print(pk)
-
     title = 'продукты'
-    links_menu = ProductCategory
-    context = {
-        'title': 'каталог'
-    }
-    return render(request, 'mainapp/products.html', context)
+    links_menu = ProductCategory.objects.all()
+    basket = get_basket(request.user)
 
-# Create your views here.
+    if pk is not None:
+        if pk == 0:
+            products = Product.objects.all().order_by('price')
+            category = {'name': 'все'}
+        else:
+            products = Product.objects.filter(category__pk=pk).order_by('price')
+            category = get_object_or_404(ProductCategory, pk=pk)
+
+        content = {
+            'title': title,
+            'links_menu': links_menu,
+            'category': category,
+            'products': products,
+            'basket': basket,
+        }
+        return render(request, 'mainapp/products_list.html', content)
+
+    hot_product = get_hot_product()
+    similar_products = get_similar_products(hot_product)
+    content = {
+        'title': title,
+        'links_menu': links_menu,
+        'hot_product': hot_product,
+        'similar_products': similar_products,
+        'basket': basket,
+    }
+    return render(request, 'mainapp/products.html', content)

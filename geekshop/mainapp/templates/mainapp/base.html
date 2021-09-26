@@ -1,11 +1,11 @@
-{% load static %}
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>
         {% block title %}
-            {{title|title}}
+            {{ title|title }}
         {% endblock %}
     </title>
     {% block css %}
@@ -14,15 +14,18 @@
     {% endblock %}
 
     {% block js %}
+
     {% endblock %}
 
 </head>
 <body>
     <div class="container">
         {% block menu %}
+
         {% endblock %}
 
         {% block content %}
+
         {% endblock %}
     </div>
 
