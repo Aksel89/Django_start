@@ -25,7 +25,7 @@ def get_similar_products(hot_product):
 
 def main(request):
     title = 'Главная'
-    products = Product.objects.all()
+    products = Product.objects.all()[:3]
     content = {
         'title': title,
         'products': products,

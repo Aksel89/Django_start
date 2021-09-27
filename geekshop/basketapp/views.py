@@ -25,7 +25,7 @@ def basket_add(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if 'login' in request.META.get('HTTP_REFERER'):
         return HttpResponseRedirect(reverse('products:product', args=[pk]))
-    basket = Basket.objects.filter(user=request.user, product=product)
+    basket = Basket.objects.filter(user=request.user, product=product).first()
 
     if not basket:
         basket = Basket(user=request.user, product=product)
@@ -56,5 +56,5 @@ def basket_edit(request, pk, quantity):
         content = {
             'basket-items': basket_items,
         }
-        result = render_to_string('basket/includes/inc_basket_list.html', content)
+        result = render_to_string('basketapp/includes/inc_basket_list.html', content)
         return JsonResponse({'result': result})
